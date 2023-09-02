@@ -1,10 +1,36 @@
-import React, { useContext } from 'react';
-import Countdown from 'react-countdown';
-import { AuthContext } from '../../context/AuthContext';
+import React, { useContext } from "react";
+import Countdown from "react-countdown";
+import { AuthContext } from "../../context/AuthContext";
 
 const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
   if (completed) {
-    return null;
+    return (
+      <div className="col">
+        <div className="card shadow-sm">
+          <div
+            style={{
+              height: "320px",
+              backgroundImage: `url(${props.item.imgUrl})`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+            }}
+            className="w-100"
+          />
+
+          <div className="card-body">
+            <p className="lead display-6">{props.item.title}</p>
+            <div className="d-flex jsutify-content-between align-item-center">
+              <h5>Auction Ended</h5>
+            </div>
+            <p className="card-text">{props.item.desc}</p>
+            <div className="d-flex justify-content-between align-item-center">
+              <p className="display-6">${props.item.curPrice}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -12,11 +38,11 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
       <div className="card shadow-sm">
         <div
           style={{
-            height: '320px',
+            height: "320px",
             backgroundImage: `url(${props.item.imgUrl})`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
           }}
           className="w-100"
         />
@@ -39,22 +65,32 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
                   Bid
                 </div>
               ) : props.owner.email === props.item.email ? (
-                <div
-                  onClick={() => props.endAuction(props.item.id)}
-                  className="btn btn-outline-secondary"
-                >
-                  Cancel Auction
-                </div>
+                <div onClick={() => props.endAuction(props.item.id)}></div>
               ) : props.owner.email === props.item.curWinner ? (
                 <p className="display-6">Winner</p>
               ) : (
-                <div
-                  onClick={() =>
-                    props.bidAuction(props.item.id, props.item.curPrice)
-                  }
-                  className="btn btn-outline-secondary"
-                >
-                  Bid
+                <div>
+                  <div>
+                    { 
+                    props.item.bidders &&
+                    props.item.bidders[props.owner.email] !== undefined ? (
+                      <div>
+                        Your previous Bid :
+                        {props.item.bidders[props.owner.email]}
+                      </div>
+                    ) : (
+                      <div> {}</div>
+                    )}
+                  </div>
+
+                  <div
+                    onClick={() =>
+                      props.bidAuction(props.item.id, props.item.curPrice)
+                    }
+                    className="btn btn-outline-secondary"
+                  >
+                    Bid
+                  </div>
                 </div>
               )}
             </div>
@@ -68,10 +104,15 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
 
 export const AuctionCard = ({ item }) => {
   let expiredDate = item.duration;
-  const { currentUser, bidAuction, endAuction } = useContext(AuthContext);
+  const { currentUser, bidAuction, endAuction, endedAuctions,  } =
+    useContext(AuthContext);
+
+  const isAuctionEnded = endedAuctions.includes(item.id);
+  
 
   return (
     <Countdown
+      
       owner={currentUser}
       date={expiredDate}
       bidAuction={bidAuction}

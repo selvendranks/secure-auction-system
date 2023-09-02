@@ -28,9 +28,9 @@ export const AddAuction = ({ setAuction }) => {
     }
 
     let currentDate = new Date();
-    let dueDate = currentDate.setHours(
-      currentDate.getHours() + itemDuration.current.value
-    );
+    let durationInMillis = itemDuration.current.value * 60 * 1000; // Convert hours to milliseconds
+    let dueDate = currentDate.getTime() + durationInMillis;
+    
 
     let newAuction = {
       email: currentUser.email,
@@ -82,7 +82,7 @@ export const AddAuction = ({ setAuction }) => {
               </Col>
               <Col>
                 <Form.Group>
-                  <Form.Label>Item Duration in hours</Form.Label>
+                  <Form.Label>Item Duration in minutes</Form.Label>
                   <Form.Control type="number" required ref={itemDuration} />
                 </Form.Group>
               </Col>
