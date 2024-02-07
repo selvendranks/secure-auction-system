@@ -6,10 +6,6 @@
 - [Technologies Used](#technologies-used)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-- [Smart Contract Functions](#smart-contract-functions)
-- [Results](#results)
-- [Conclusion and Future Work](#conclusion-and-future-work)
-- [References](#references)
 
 ## Overview
 
