@@ -1,4 +1,4 @@
-# Secure Auction System with Decentralized Payment
+# Secure Hybrid Auction System combining centralised and decetralised approach (Firebase + blockChain)  
 
 ## Table of Contents
 - [Overview](#overview)
