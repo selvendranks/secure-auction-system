@@ -1,10 +1,18 @@
-import { Button, Form, Modal, Alert, Row, Col } from 'react-bootstrap';
-import React, { useContext, useRef, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+import { Button, Form, Modal, Alert, Row, Col } from "react-bootstrap";
+import React, { useContext, useRef, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import createItem from "../../Backend/Interaction/createItem"
+import {ethers} from "ethers";
+
+import Web3 from "web3"; // Import the Web3 library
+let web3 = new Web3(window.ethereum);
+// let web3 = new Web3('http://127.0.0.1:8545');
+const artifacts = require("../../Backend/build/contracts/Auction.json");
+const auctionAbi = artifacts.abi;
 
 export const AddAuction = ({ setAuction }) => {
   const [showForm, setShowForm] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const itemTitle = useRef();
   const itemDesc = useRef();
@@ -17,20 +25,59 @@ export const AddAuction = ({ setAuction }) => {
   const openForm = () => setShowForm(true);
   const closeForm = () => setShowForm(false);
 
-  const imgTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+  const imgTypes = ["image/png", "image/jpeg", "image/jpg"];
 
-  const submitForm = async (e) => {
+  const requestEthereumAccess = async (e) => {
     e.preventDefault();
-    setError('');
+    try {
+
+      
+      if (typeof window.ethereum !== "undefined") {
+        // Request Ethereum access and get the accounts
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        const selectedAccount = accounts[0];
+
+
+        const balanceWei = await web3.eth.getBalance(selectedAccount);
+        const balanceEther = web3.utils.fromWei(balanceWei, "ether");
+        console.log(balanceEther);
+
+        console.log(selectedAccount);
+
+         let createItemResult = await createItem(
+          selectedAccount,
+          itemTitle.current.value,
+          itemDuration.current.value
+        );
+
+        if (createItemResult === "success") {
+          // Only execute submitForm if createItem was successful
+          submitForm();
+        } else {
+          // Handle the error from createItem here, if needed
+          console.error("createItem failed");
+        }
+       
+      
+      }
+    } catch (error) {
+      // Handle errors or user rejection
+      console.error(error);
+    }
+  };
+
+  const submitForm = async () => {
+    setError("");
 
     if (!imgTypes.includes(itemImage.current.files[0].type)) {
-      return setError('Please use a valid image');
+      return setError("Please use a valid image");
     }
 
     let currentDate = new Date();
     let durationInMillis = itemDuration.current.value * 60 * 1000; // Convert hours to milliseconds
     let dueDate = currentDate.getTime() + durationInMillis;
-    
 
     let newAuction = {
       email: currentUser.email,
@@ -53,7 +100,7 @@ export const AddAuction = ({ setAuction }) => {
         </div>
       </div>
       <Modal centered show={showForm} onHide={closeForm}>
-        <form onSubmit={submitForm}>
+        <form onSubmit={requestEthereumAccess}>
           <Modal.Header>
             <Modal.Title>Create Auction</Modal.Title>
           </Modal.Header>

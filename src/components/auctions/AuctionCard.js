@@ -67,7 +67,7 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
               ) : props.owner.email === props.item.email ? (
                 <div onClick={() => props.endAuction(props.item.id)}></div>
               ) : props.owner.email === props.item.curWinner ? (
-                <p className="display-6">Winner</p>
+                <p className="display-6">higest bidder</p>
               ) : (
                 <div>
                   <div>
@@ -85,7 +85,7 @@ const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
 
                   <div
                     onClick={() =>
-                      props.bidAuction(props.item.id, props.item.curPrice)
+                      props.bidAuction(props.item.id, props.item.curPrice , props.item.title)
                     }
                     className="btn btn-outline-secondary"
                   >
