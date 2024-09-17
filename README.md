@@ -1,5 +1,9 @@
 # Secure Hybrid Auction System combining centralised and decetralised approach (Firebase + blockChain)  
 
+## FinalPaper[2] file attached . Refer it for a complete description on the project.
+
+Below is a basic Overview 👇
+
 ## Table of Contents
 - [Overview](#overview)
 - [Key Features](#key-features)
